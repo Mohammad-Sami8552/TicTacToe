@@ -1,0 +1,42 @@
+body{
+   width: 100vw;
+   height: 100vh;
+    background-color: aqua;
+    display: flex;
+     justify-content: center;
+     align-items:center;
+} 
+
+ h1 {
+   font-size: 40px;
+    text-align: center;
+    margin-bottom: 80px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+ }
+  #myCanvas {
+   margin-bottom: 800;
+ }
+
+ 
+ #text {
+   margin-top: 500;
+    height: 500;
+    font-style:oblique;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ }
+  #btn {
+   font-style: oblique;
+   box-shadow: 50px;
+   font-size: 30px;
+   display: flex;
+   justify-content: center;
+    background-color: rgb(13, 211, 26);
+
+ }
+ #status {
+   font-size: 30px;
+   text-align: center;
+   font-style: italic;
+ }
