@@ -27,10 +27,13 @@ let st = document.getElementById("status");
 
 let board = [];
 let gameOver = false;
+let enabled = true;
+let turn = 0;
 
 function initialize() {
-    let turn = prompt("Enter 1 for your turn first otherwise 0");
+    turn = prompt("Enter 1 for your turn first otherwise 0");
     gameOver = false;
+    enabled = true;
     st.innerText = "Game Running..."
     ctx.clearRect(0, 0, 300, 300);
     drawGrid();
@@ -41,14 +44,15 @@ function initialize() {
 
         }
     }
-    if(turn == 0) {
-            let move = nextMove();
-            let xa = move.x;
-            let yb = move.y;
-            xC = yb * 100 + 40;
-            yC = xa * 100 + 60;
-            board[xa][yb] = 0;
-            ctx.fillText(`${board[parseInt(xa)][parseInt(yb)]}`, xC, yC);
+    if (turn == 0) {
+        let move = nextMove();
+        let xa = move.x;
+        let yb = move.y;
+        xC = yb * 100 + 40;
+        yC = xa * 100 + 60;
+        board[xa][yb] = 0;
+        ctx.fillText(`${board[parseInt(xa)][parseInt(yb)]}`, xC, yC);
+        turn = 1;
     }
 }
 
@@ -180,45 +184,66 @@ function checkWinner() {
 
 function endGame(status) {
     gameOver = true;
-    st.innerText = `${status == 0 ? "Pritam Kumar" : "You"} Won !`;
+    st.innerText = `${status == 0 ? "Raj" : "You"} Won !`;
     txt.innerText = "Restart Game";
 }
 
 initialize();
+
 canvas.addEventListener("click", function (event) {
-    let a = event.offsetX;
-    let b = event.offsetY;
-    let x = parseInt(a) / 100;
-    let y = parseInt(b) / 100;
-    if (board[parseInt(y)][parseInt(x)] == -1 && !gameOver) {
-        let xC = parseInt(x) * 100 + 40;
-        let yC = parseInt(y) * 100 + 60;
-        board[parseInt(y)][parseInt(x)] = 1;
-        ctx.fillText(`${board[parseInt(y)][parseInt(x)]}`, xC, yC);
-        let status = checkWinner();
-        if (status == 0 || status == 1) {
-            endGame();
-        } else if (!checkFill()) {
-            let move = nextMove();
-            let xa = move.x;
-            let yb = move.y;
-            xC = yb * 100 + 40;
-            yC = xa * 100 + 60;
-            board[xa][yb] = 0;
-            ctx.fillText(`${board[parseInt(xa)][parseInt(yb)]}`, xC, yC);
+    if (enabled) {
+        let a = event.offsetX;
+        let b = event.offsetY;
+        let x = parseInt(a) / 100;
+        let y = parseInt(b) / 100;
+        if (board[parseInt(y)][parseInt(x)] == -1 && !gameOver) {
+            let xC = parseInt(x) * 100 + 40;
+            let yC = parseInt(y) * 100 + 60;
+            if (turn == 1) {
+                board[parseInt(y)][parseInt(x)] = 1;
+                ctx.fillText(`${board[parseInt(y)][parseInt(x)]}`, xC, yC);
+                turn = 0;
+                enabled = false;
+            }
+            let status = checkWinner();
+            if (status == 0 || status == 1) {
+                endGame();
+            }
+            else if (checkFill(board)) {
+                st.innerText = `Game Draw`;
+                gameOver = true;
+                txt.innerText = "Restart Game";
+            }
+            else if (!checkFill() && turn == 0) {
+                setTimeout(() => {
+                    let move = nextMove();
+                    let xa = move.x;
+                    let yb = move.y;
+                    xC = yb * 100 + 40;
+                    yC = xa * 100 + 60;
+                    board[xa][yb] = 0;
+                    ctx.fillText(`${board[parseInt(xa)][parseInt(yb)]}`, xC, yC);
+                    status = checkWinner();
+                    if (status == 0 || status == 1) {
+                        endGame(status);
+                    }
+                    if (checkFill(board)) {
+                        st.innerText = `Game Draw`;
+                        gameOver = true;
+                        txt.innerText = "Restart Game";
+                    }
+                    turn = 1;
+                    enabled = true;
+                }, 3000);
+
+            }
         }
 
-        status = checkWinner();
-        if (status == 0 || status == 1) {
-            endGame(status);
-        }
-
-        if (checkFill(board)) {
-            st.innerText = `Game Draw`;
-            gameOver = true;
-            txt.innerText = "Restart Game";
-        }
     }
+
+
+
+
 });
 
 
